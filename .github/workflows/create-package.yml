@@ -1,0 +1,86 @@
+name: Create Unity Package and Release
+
+# 1. Trigger Conditions
+on:
+  push:
+    tags:
+      - 'v*' # Trigger Release creation and upload only on pushing v* tags
+  workflow_dispatch: # Allow manual triggering (manual trigger won't create a Release, but will generate an artifact)
+
+# 2. Jobs
+jobs:
+  build-and-release:
+    name: Build, Package, and Release Unity Logging Package
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write # Required to create a release and upload assets
+
+    steps:
+      # Step 1: Check out repository code
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # Fetch all history to enable auto-generating release notes if desired
+
+      # Step 2: Define package name and asset name variables
+      - name: Set up package variables
+        id: package_vars
+        run: |
+          PACKAGE_NAME="UnityLoggingSystem"
+          echo "package_name_lower=${PACKAGE_NAME,,}" >> $GITHUB_OUTPUT
+          if [[ "${{ github.ref }}" == refs/tags/v* ]]; then
+            VERSION_TAG="${{ github.ref_name }}" # e.g., v1.0.0
+          else
+            VERSION_TAG="manual-build-${{ github.run_id }}"
+          fi
+          echo "version_tag=${VERSION_TAG}" >> $GITHUB_OUTPUT
+          # Ensure the final asset name for the release includes the version
+          echo "release_asset_name=${PACKAGE_NAME}-${VERSION_TAG}.unitypackage" >> $GITHUB_OUTPUT
+        shell: bash
+
+      # Step 3: Create .unitypackage file
+      - name: Create .unitypackage
+        uses: natsuneko-laboratory/create-unitypackage@v3
+        with:
+          root: '.'
+          files-glob: |
+            ./Assets/Resources/**/*
+            ./Assets/Scenes/**/*
+            ./Assets/Unity.LoggingSystem/**/*
+            !./Assets/Unity.LoggingSystem/Tests/**/*
+          # Output the package with the versioned name directly
+          dest: ${{ steps.package_vars.outputs.release_asset_name }}
+
+      # Step 4: Create GitHub Release and Upload Asset (using softprops/action-gh-release)
+      # This replaces the old steps 4 and 5
+      - name: Create GitHub Release and Upload Asset
+        if: startsWith(github.ref, 'refs/tags/v') # Only run for tag pushes
+        uses: softprops/action-gh-release@v2 # IMPORTANT: Check for the latest v2.x.x version on their GitHub page
+        # env: # GITHUB_TOKEN is automatically used by default
+        #   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          name: Release ${{ steps.package_vars.outputs.version_tag }} # Release title, e.g., "Release v1.0.0"
+          tag_name: ${{ steps.package_vars.outputs.version_tag }}    # The tag that triggered this release
+          body: | # Release description
+            Automated release for Unity Logging System version ${{ steps.package_vars.outputs.version_tag }}.
+            Package contents: Assets/Resources/, Assets/Scenes/, Assets/Unity.LoggingSystem/ (excluding Tests)
+            Please see README for usage instructions.
+
+            **Files in this release:**
+            - ${{ steps.package_vars.outputs.release_asset_name }}
+          draft: false      # Set to true to create a draft release
+          prerelease: false # Set to true if this is a pre-release
+          files: |          # List of files to upload as release assets
+            ./${{ steps.package_vars.outputs.release_asset_name }}
+          fail_on_unmatched_files: true # Recommended: Fail if specified files are not found
+          # generate_release_notes: true # Optional: Uncomment to auto-generate release notes from commits
+                                        # Requires appropriate checkout depth and possibly more configuration.
+
+      # Step 5: Upload .unitypackage as a build artifact (for all runs)
+      # This step is still useful for manual runs or for keeping a record of every build's package.
+      - name: Upload Package Artifact (for all runs)
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ steps.package_vars.outputs.package_name_lower }}-package # e.g., unityconnectchannel-package
+          path: ./${{ steps.package_vars.outputs.release_asset_name }} # Path to the generated package
+          if-no-files-found: error # Fail if the package file wasn't created
