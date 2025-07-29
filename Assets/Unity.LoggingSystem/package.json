@@ -1,0 +1,32 @@
+{
+  "name": "com.unity.loggingsystem",
+  "displayName": "Unity Logging System",
+  "version": "1.0.0",
+  "unity": "6000.0",
+  "description": "A comprehensive logging system for Unity applications with runtime display, performance monitoring, and cross-platform support.",
+  "keywords": [
+    "logging",
+    "debug",
+    "console",
+    "runtime",
+    "performance",
+    "monitoring",
+    "ui",
+    "display"
+  ],
+  "dependencies": {
+    "com.unity.textmeshpro": "3.0.6"
+  },
+  "author": {
+    "name": "CodeTeaBooker",
+    "email": "codeteabooker@gmail.com"
+  },
+  "license": "MIT",
+  "samples": [
+    {
+      "displayName": "Basic Logging Examples",
+      "description": "Demonstrates basic usage of the logging system with different log levels and loggers.",
+      "path": "Examples~"
+    }
+  ]
+}
