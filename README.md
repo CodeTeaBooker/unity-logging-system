@@ -36,7 +36,7 @@ A comprehensive, high-performance logging system for Unity applications with run
 3. Enter: `https://github.com/yourusername/unity-logging-system.git`
 
 ### Method 2: Download .unitypackage
-1. Download the latest `.unitypackage` from [Releases](https://github.com/yourusername/unity-logging-system/releases)
+1. Download the latest `.unitypackage` from [Releases](https://github.com/CodeTeaBooker/unity-logging-system/releases)
 2. Import into your Unity project via `Assets > Import Package > Custom Package`
 
 ### Method 3: Manual Installation
