@@ -193,7 +193,7 @@ The included demo scene demonstrates all features:
 
 ### Running the Demo
 
-1. Open the `DemoScene` in the Examples folder
+1. Open the `DemoScene` in the `Unity.LoggingSystem/DemoScenes` folder
 2. Play the scene
 3. Use the UI buttons to test different logger configurations
 4. Monitor the on-screen display and Unity console
@@ -310,10 +310,11 @@ Assets/Unity.LoggingSystem/
 ├── Platform/                # Cross-platform compatibility
 │   ├── PlatformCompatibility.cs
 │   └── CrossPlatformLoggerValidator.cs
-├── Examples/                # Demo scene and example code
+├── Examples/                # Example code
 │   ├── DemoSceneController.cs
 │   ├── DemoBusinessLogic.cs
 │   └── ComprehensiveValidationTests.cs
+├── DemoScenes/              # Unity demo scenes
 ├── Tests/                   # Unit and integration tests
 └── Editor/                  # Unity Editor extensions
 ```
