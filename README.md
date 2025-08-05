@@ -33,7 +33,7 @@ A comprehensive, high-performance logging system for Unity applications with run
 ### Method 1: Unity Package Manager (Recommended)
 1. Open Unity Package Manager
 2. Click "Add package from git URL"
-3. Enter: `https://github.com/yourusername/unity-logging-system.git`
+3. Enter: `https://github.com/CodeTeaBooker/unity-logging-system.git`
 
 ### Method 2: Download .unitypackage
 1. Download the latest `.unitypackage` from [Releases](https://github.com/CodeTeaBooker/unity-logging-system/releases)
